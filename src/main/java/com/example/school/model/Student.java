@@ -3,6 +3,7 @@ package com.example.school.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -14,7 +15,7 @@ import java.util.Set;
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long studentId;
+    private Integer studentId;
 
     private String lastName;
     private String firstName;
@@ -22,31 +23,18 @@ public class Student {
     private LocalDate birthDate;
     private String address;
     private String phone;
-    private LocalDate enrollmentDate;
-    private String gender;
 
-    @Column(unique = true)
-    private String login;
-
-    private String passwordHash;
-    private LocalDateTime lastLogin;
-    private String role = "student";
+    @OneToMany(mappedBy = "studentId")
+    private Set<Parent_Student> parentStudents;
 
     @ManyToOne
     @JoinColumn(name = "class_id")
-    private SchoolClass studentClass;
+    private SchoolClass classId;
 
-    @OneToMany(mappedBy = "student")
-    private Set<Grade> grades;
-
-    @OneToMany(mappedBy = "student")
-    private Set<Attendance> attendances;
-
-    @ManyToMany
-    @JoinTable(
-            name = "parent_student",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "parent_id")
-    )
-    private Set<Parent> parents;
+    private LocalDate enrollmentDate;
+    private char gender;
+    private String login;
+    private String passwordHash;
+    private LocalDateTime lastLogin;
+    private String role;
 }

@@ -3,6 +3,7 @@ package com.example.school.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -14,7 +15,22 @@ import java.util.Set;
 public class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long teacherId;
+    private Integer teacherId;
+
+    @OneToMany(mappedBy = "teacherId")
+    private Set<SchoolClass> classesWhereMainTeacher;
+
+    @OneToMany(mappedBy = "teacherId")
+    private Set<SchoolEvent> schoolEvents;
+
+    @OneToMany(mappedBy = "teacherId")
+    private Set<Schedule> schedules;
+
+    @OneToMany(mappedBy = "teacherId")
+    private Set<LearningMaterial> materials;
+
+    @OneToMany(mappedBy = "teacherId")
+    private Set<Teaching> teachingSubjects;
 
     private String lastName;
     private String firstName;
@@ -25,26 +41,8 @@ public class Teacher {
     private String education;
     private Integer experience;
     private String position;
-
-    @Column(unique = true)
     private String login;
-
     private String passwordHash;
     private LocalDateTime lastLogin;
-    private String role = "teacher";
-
-    @OneToMany(mappedBy = "teacher")
-    private Set<Teaching> teachings;
-
-    @OneToMany(mappedBy = "classTeacher")
-    private Set<SchoolClass> classes;
-
-    @OneToMany(mappedBy = "responsibleTeacher")
-    private Set<SchoolEvent> events;
-
-    @OneToMany(mappedBy = "teacher")
-    private Set<LearningMaterial> materials;
-
-    @OneToMany(mappedBy = "teacher")
-    private Set<Schedule> schedules;
+    private String role;
 }

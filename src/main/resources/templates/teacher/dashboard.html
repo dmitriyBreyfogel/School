@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Личный кабинет учителя</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.2.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/webjars/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar {
+            background-color: #3f51b5;
+            color: white;
+            height: 100vh;
+            position: fixed;
+        }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .sidebar .nav-link i {
+            width: 20px;
+            margin-right: 10px;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: 600;
+        }
+        .schedule-item {
+            border-left: 3px solid #3f51b5;
+            padding-left: 15px;
+            margin-bottom: 15px;
+        }
+        .event-item {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body>
+<div class="sidebar col-md-3 col-lg-2 d-md-block p-4">
+    <div class="text-center mb-4">
+        <i class="fas fa-chalkboard-teacher fa-3x mb-3"></i>
+        <h5 th:text="${teacher.getFullName()}"></h5>
+        <small class="text-muted">Учитель</small>
+    </div>
+
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link active" href="#">
+                <i class="fas fa-tachometer-alt"></i>Главная
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/teacher/grades">
+                <i class="fas fa-star"></i>Оценки
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/teacher/attendance">
+                <i class="fas fa-clipboard-check"></i>Посещаемость
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/change-password">
+                <i class="fas fa-key"></i>Сменить пароль
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/logout">
+                <i class="fas fa-sign-out-alt"></i>Выход
+            </a>
+        </li>
+    </ul>
+</div>
+
+<div class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3><i class="fas fa-tachometer-alt me-2"></i>Панель управления</h3>
+        <div class="text-muted">
+            <i class="fas fa-calendar-day me-1"></i>
+            <span th:text="${#temporals.format(#temporals.createToday(), 'dd.MM.yyyy')}"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-calendar-alt me-2"></i>Расписание
+                </div>
+                <div class="card-body">
+                    <div th:each="schedule : ${schedule}" class="schedule-item">
+                        <h6 th:text="${schedule.subject.name}"></h6>
+                        <div class="text-muted small">
+                            <span th:text="${schedule.dayOfWeek}"></span>,
+                            <span th:text="${schedule.lessonNumber}"></span> урок
+                            <span class="ms-2" th:text="${schedule.classGroup.name}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-calendar-check me-2"></i>Ближайшие события
+                </div>
+                <div class="card-body">
+                    <div th:each="event : ${events}" class="event-item">
+                        <div class="fw-bold" th:text="${event.title}"></div>
+                        <div class="small text-muted">
+                            <i class="fas fa-clock me-1"></i>
+                            <span th:text="${#temporals.format(event.eventDate, 'dd.MM.yyyy')}"></span>
+                        </div>
+                    </div>
+                    <div th:if="${events.empty}" class="text-muted text-center py-3">
+                        Нет предстоящих событий
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/webjars/jquery/3.6.4/jquery.min.js"></script>
+<script src="/webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Личный кабинет родителя</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.2.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/webjars/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar {
+            background-color: #ff9800;
+            color: white;
+            height: 100vh;
+            position: fixed;
+        }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .sidebar .nav-link i {
+            width: 20px;
+            margin-right: 10px;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        .child-tab {
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .child-tab:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        .child-tab.active {
+            background-color: #ff9800;
+            color: white;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+        .grade-badge {
+            font-size: 0.9em;
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="sidebar col-md-3 col-lg-2 d-md-block p-4">
+    <div class="text-center mb-4">
+        <i class="fas fa-user-friends fa-3x mb-3"></i>
+        <h5 th:text="${parent.getFullName()}"></h5>
+        <small class="text-muted">Родитель</small>
+    </div>
+
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link active" href="#">
+                <i class="fas fa-tachometer-alt"></i>Главная
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/change-password">
+                <i class="fas fa-key"></i>Сменить пароль
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/logout">
+                <i class="fas fa-sign-out-alt"></i>Выход
+            </a>
+        </li>
+    </ul>
+</div>
+
+<div class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3><i class="fas fa-tachometer-alt me-2"></i>Панель управления</h3>
+        <div class="text-muted">
+            <i class="fas fa-calendar-day me-1"></i>
+            <span th:text="${#temporals.format(#temporals.createToday(), 'dd.MM.yyyy')}"></span>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-child me-2"></i>Мои дети
+                </div>
+                <div class="card-body">
+                    <div class="d-flex">
+                        <div th:each="child, iter : ${children}"
+                             class="child-tab me-2"
+                             th:class="${iter.first} ? 'active' : ''"
+                             th:onclick="|showChild('child-${child.studentId}')|">
+                            <span th:text="${child.fullName}"></span>
+                            <small class="d-block" th:text="${child.studentClass.name}"></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:each="child : ${children}" th:id="|child-${child.studentId}|"
+         th:class="${children.first == child} ? 'row' : 'row d-none'">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-star me-2"></i>Оценки</span>
+                    <small th:text="${child.fullName}"></small>
+                </div>
+                <div class="card-body">
+                    <div th:each="grade : ${grades}" class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span th:text="${grade.subject.name}"></span>
+                            <span class="badge bg-primary grade-badge" th:text="${grade.value}"></span>
+                        </div>
+                        <small class="text-muted" th:text="${grade.date} + ' - ' + ${grade.comment}"></small>
+                    </div>
+                    <div th:if="${grades.empty}" class="text-muted text-center py-3">
+                        Нет оценок
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-clipboard-check me-2"></i>Посещаемость</span>
+                    <small th:text="${child.fullName}"></small>
+                </div>
+                <div class="card-body">
+                    <div th:each="attendance : ${attendance}" class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span th:text="${attendance.date}"></span>
+                            <span th:class="${attendance.present} ? 'text-success' : 'text-danger'">
+                                <i class="fas" th:class="${attendance.present} ? 'fa-check' : 'fa-times'"></i>
+                                <span th:text="${attendance.present} ? 'Присутствовал' : 'Отсутствовал'"></span>
+                            </span>
+                        </div>
+                        <small class="text-muted" th:text="${attendance.subject.name}"></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 mt-3">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-calendar-alt me-2"></i>Расписание</span>
+                    <small th:text="${child.fullName}"></small>
+                </div>
+                <div class="card-body">
+                    <div th:each="day : ${schedule}" class="mb-4">
+                        <h6 th:text="${day.key}"></h6>
+                        <div th:each="lesson : ${day.value}" class="ps-3 mb-2">
+                            <div class="d-flex justify-content-between">
+                                <span th:text="${lesson.subject.name}"></span>
+                                <small class="text-muted" th:text="${lesson.lessonNumber} + ' урок'"></small>
+                            </div>
+                            <small class="text-muted" th:text="${lesson.teacher.fullName}"></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/webjars/jquery/3.6.4/jquery.min.js"></script>
+<script src="/webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+<script>
+    function showChild(childId) {
+        $('.child-tab').removeClass('active');
+        $(event.currentTarget).addClass('active');
+
+        $('.row[id^="child-"]').addClass('d-none');
+        $('#' + childId).removeClass('d-none');
+    }
+</script>
+</body>
+</html>

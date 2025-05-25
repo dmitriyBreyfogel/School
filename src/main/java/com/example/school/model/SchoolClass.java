@@ -3,6 +3,7 @@ package com.example.school.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.Set;
 
 @Getter
@@ -12,20 +13,22 @@ import java.util.Set;
 public class SchoolClass {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long classId;
+    @Column(name = "class_id")
+    private Integer classId;
+
+    @OneToMany(mappedBy = "classId")
+    private Set<Schedule> schedules;
+
+    @OneToMany(mappedBy = "classId")
+    private Set<Student> students;
 
     private Integer classNumber;
     private String classLetter;
-    private Integer formationYear;
-    private String profile;
 
     @ManyToOne
     @JoinColumn(name = "class_teacher_id")
-    private Teacher classTeacher;
+    private Teacher teacherId;
 
-    @OneToMany(mappedBy = "studentClass")
-    private Set<Student> students;
-
-    @OneToMany(mappedBy = "class")
-    private Set<Schedule> schedules;
+    private Integer formationYear;
+    private String profile;
 }

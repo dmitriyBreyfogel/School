@@ -5,34 +5,59 @@
     <title>Вход в систему</title>
     <link rel="stylesheet" href="/webjars/bootstrap/5.2.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="/webjars/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            border-radius: 10px;
+            border: none;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+        }
+        .btn-primary {
+            background-color: #3f51b5;
+            border: none;
+            padding: 10px 0;
+        }
+    </style>
 </head>
 <body class="bg-light">
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4">
-            <div class="card shadow">
+            <div class="card shadow-sm">
                 <div class="card-body p-4">
-                    <h3 class="card-title text-center mb-4">
-                        <i class="fas fa-school me-2"></i>Школьная система
-                    </h3>
+                    <div class="text-center mb-4">
+                        <i class="fas fa-school fa-3x text-primary mb-3"></i>
+                        <h3 class="card-title">Школьная система</h3>
+                    </div>
 
                     <form th:action="@{/login}" method="post">
-                        <div th:if="${error}" class="alert alert-danger" role="alert">
+                        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
                             <i class="fas fa-exclamation-circle me-2"></i>
                             <span th:text="${error}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
 
                         <div class="mb-3">
                             <label for="login" class="form-label">Логин</label>
-                            <input type="text" class="form-control" id="login" name="login" required>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" id="login" name="login" required>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label for="password" class="form-label">Пароль</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100">
+                        <button type="submit" class="btn btn-primary w-100 mb-3">
                             <i class="fas fa-sign-in-alt me-2"></i>Войти
                         </button>
                     </form>

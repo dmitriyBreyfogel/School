@@ -7,6 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface TeacherRepository extends JpaRepository<Teacher, Long> {
-    Optional<Teacher> findByLogin(String login);
+public interface TeacherRepository extends JpaRepository<Teacher, Integer> {
 }

@@ -3,6 +3,7 @@ package com.example.school.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.Set;
 
 @Getter
@@ -12,7 +13,10 @@ import java.util.Set;
 public class Classroom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long classroomId;
+    private Integer classroomId;
+
+    @OneToMany(mappedBy = "classroomId")
+    private Set<Schedule> schedules;
 
     private String roomNumber;
     private String roomName;
@@ -20,7 +24,4 @@ public class Classroom {
     private String description;
     private Integer floor;
     private String equipment;
-
-    @OneToMany(mappedBy = "classroom")
-    private Set<Schedule> schedules;
 }

@@ -3,6 +3,7 @@ package com.example.school.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.time.LocalDate;
 
 @Getter
@@ -12,15 +13,15 @@ import java.time.LocalDate;
 public class Grade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long gradeId;
+    private Integer gradeId;
 
     @ManyToOne
     @JoinColumn(name = "student_id")
-    private Student student;
+    private Student studentId;
 
     @ManyToOne
     @JoinColumn(name = "subject_id")
-    private Subject subject;
+    private Subject subjectId;
 
     private LocalDate gradeDate;
     private Integer gradeValue;

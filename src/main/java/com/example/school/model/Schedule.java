@@ -3,6 +3,7 @@ package com.example.school.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.sql.Time;
 
 @Getter
@@ -12,7 +13,7 @@ import java.sql.Time;
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long scheduleId;
+    private Integer scheduleId;
 
     private Integer dayOfWeek;
     private Integer lessonNumber;
@@ -21,17 +22,17 @@ public class Schedule {
 
     @ManyToOne
     @JoinColumn(name = "subject_id")
-    private Subject subject;
+    private Subject subjectId;
 
     @ManyToOne
     @JoinColumn(name = "class_id")
-    private SchoolClass schoolClass;
+    private SchoolClass classId;
 
     @ManyToOne
     @JoinColumn(name = "teacher_id")
-    private Teacher teacher;
+    private Teacher teacherId;
 
     @ManyToOne
     @JoinColumn(name = "classroom_id")
-    private Classroom classroom;
+    private Classroom classroomId;
 }

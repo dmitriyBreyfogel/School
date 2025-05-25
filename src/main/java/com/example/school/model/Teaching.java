@@ -11,13 +11,13 @@ import lombok.Setter;
 public class Teaching {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long teachingId;
+    private Integer teachingId;
 
     @ManyToOne
     @JoinColumn(name = "teacher_id")
-    private Teacher teacher;
+    private Teacher teacherId;
 
     @ManyToOne
     @JoinColumn(name = "subject_id")
-    private Subject subject;
+    private Subject subjectId;
 }

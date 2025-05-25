@@ -12,11 +12,11 @@ import java.time.LocalDate;
 public class Attendance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long attendanceId;
+    private Integer attendanceId;
 
     @ManyToOne
     @JoinColumn(name = "student_id")
-    private Student student;
+    private Student studentId;
 
     private LocalDate attendanceDate;
 

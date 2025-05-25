@@ -3,8 +3,9 @@ package com.example.school.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.time.LocalDate;
+
 import java.sql.Time;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -13,7 +14,7 @@ import java.sql.Time;
 public class SchoolEvent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long eventId;
+    private Integer eventId;
 
     private String eventName;
     private LocalDate eventDate;
@@ -24,5 +25,5 @@ public class SchoolEvent {
 
     @ManyToOne
     @JoinColumn(name = "responsible_teacher_id")
-    private Teacher responsibleTeacher;
+    private Teacher teacherId;
 }
