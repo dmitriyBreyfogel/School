@@ -2,7 +2,7 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Панель родителя</title>
+  <title>Учителя</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -75,32 +75,29 @@
   <div class="logout">
     <a th:href="@{/logout}">Выйти</a>
   </div>
-  <h1>Добро пожаловать, <span th:text="${parent.firstName} + ' ' + ${parent.lastName}"></span></h1>
+  <h1>Учителя, <span th:text="${parent.firstName} + ' ' + ${parent.lastName}"></span></h1>
   <div class="nav">
+    <a th:href="@{/parent/dashboard}">Панель</a>
     <a th:href="@{/parent/children}">Дети</a>
-    <a th:href="@{/parent/teachers}">Учителя</a>
     <a th:href="@{/parent/events}">Мероприятия</a>
   </div>
-  <h2>Ваши дети</h2>
   <table>
     <thead>
     <tr>
-      <th>Имя</th>
       <th>Фамилия</th>
-      <th>Класс</th>
-      <th>Действия</th>
+      <th>Имя</th>
+      <th>Отчество</th>
+      <th>Телефон</th>
+      <th>Должность</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="child : ${children}">
-      <td th:text="${child.firstName}"></td>
-      <td th:text="${child.lastName}"></td>
-      <td th:text="${child.classId.classNumber} + ${child.classId.classLetter}"></td>
-      <td>
-        <a th:href="@{/parent/child/{id}/grades(id=${child.studentId})}">Оценки</a> |
-        <a th:href="@{/parent/child/{id}/attendance(id=${child.studentId})}">Посещаемость</a> |
-        <a th:href="@{/parent/child/{id}/schedule(id=${child.studentId})}">Расписание</a>
-      </td>
+    <tr th:each="teacher : ${teachers}">
+      <td th:text="${teacher.lastName}"></td>
+      <td th:text="${teacher.firstName}"></td>
+      <td th:text="${teacher.middleName}"></td>
+      <td th:text="${teacher.phone}"></td>
+      <td th:text="${teacher.position}"></td>
     </tr>
     </tbody>
   </table>

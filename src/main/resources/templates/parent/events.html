@@ -2,7 +2,7 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Панель родителя</title>
+  <title>Мероприятия</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -18,7 +18,7 @@
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-    h1 {
+    h1, h2 {
       color: #333;
       text-align: center;
     }
@@ -75,32 +75,43 @@
   <div class="logout">
     <a th:href="@{/logout}">Выйти</a>
   </div>
-  <h1>Добро пожаловать, <span th:text="${parent.firstName} + ' ' + ${parent.lastName}"></span></h1>
+  <h1>Школьные мероприятия, <span th:text="${parent.firstName} + ' ' + ${parent.lastName}"></span></h1>
   <div class="nav">
+    <a th:href="@{/parent/dashboard}">Панель</a>
     <a th:href="@{/parent/children}">Дети</a>
     <a th:href="@{/parent/teachers}">Учителя</a>
-    <a th:href="@{/parent/events}">Мероприятия</a>
   </div>
-  <h2>Ваши дети</h2>
+  <h2>Предстоящие мероприятия</h2>
   <table>
     <thead>
     <tr>
-      <th>Имя</th>
-      <th>Фамилия</th>
-      <th>Класс</th>
-      <th>Действия</th>
+      <th>Название</th>
+      <th>Описание</th>
+      <th>Дата</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="child : ${children}">
-      <td th:text="${child.firstName}"></td>
-      <td th:text="${child.lastName}"></td>
-      <td th:text="${child.classId.classNumber} + ${child.classId.classLetter}"></td>
-      <td>
-        <a th:href="@{/parent/child/{id}/grades(id=${child.studentId})}">Оценки</a> |
-        <a th:href="@{/parent/child/{id}/attendance(id=${child.studentId})}">Посещаемость</a> |
-        <a th:href="@{/parent/child/{id}/schedule(id=${child.studentId})}">Расписание</a>
-      </td>
+    <tr th:each="event : ${upcomingEvents}">
+      <td th:text="${event.event_name}"></td>
+      <td th:text="${event.description}"></td>
+      <td th:text="${event.event_date}"></td>
+    </tr>
+    </tbody>
+  </table>
+  <h2>Прошедшие мероприятия</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>Название</th>
+      <th>Описание</th>
+      <th>Дата</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="event : ${pastEvents}">
+      <td th:text="${event.event_name}"></td>
+      <td th:text="${event.description}"></td>
+      <td th:text="${event.event_date}"></td>
     </tr>
     </tbody>
   </table>

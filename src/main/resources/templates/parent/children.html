@@ -2,7 +2,7 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Панель родителя</title>
+  <title>Дети</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -75,13 +75,12 @@
   <div class="logout">
     <a th:href="@{/logout}">Выйти</a>
   </div>
-  <h1>Добро пожаловать, <span th:text="${parent.firstName} + ' ' + ${parent.lastName}"></span></h1>
+  <h1>Ваши дети, <span th:text="${parent.firstName} + ' ' + ${parent.lastName}"></span></h1>
   <div class="nav">
-    <a th:href="@{/parent/children}">Дети</a>
+    <a th:href="@{/parent/dashboard}">Панель</a>
     <a th:href="@{/parent/teachers}">Учителя</a>
     <a th:href="@{/parent/events}">Мероприятия</a>
   </div>
-  <h2>Ваши дети</h2>
   <table>
     <thead>
     <tr>

@@ -2,7 +2,7 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Панель родителя</title>
+  <title>Оценки</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -18,7 +18,7 @@
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-    h1 {
+    h1, h2 {
       color: #333;
       text-align: center;
     }
@@ -75,32 +75,45 @@
   <div class="logout">
     <a th:href="@{/logout}">Выйти</a>
   </div>
-  <h1>Добро пожаловать, <span th:text="${parent.firstName} + ' ' + ${parent.lastName}"></span></h1>
+  <h1>Оценки, <span th:text="${student.firstName} + ' ' + ${student.lastName}"></span></h1>
   <div class="nav">
-    <a th:href="@{/parent/children}">Дети</a>
-    <a th:href="@{/parent/teachers}">Учителя</a>
-    <a th:href="@{/parent/events}">Мероприятия</a>
+    <a th:href="@{/student/dashboard}">Панель</a>
+    <a th:href="@{/student/attendance}">Посещаемость</a>
+    <a th:href="@{/student/schedule}">Расписание</a>
   </div>
-  <h2>Ваши дети</h2>
+  <h2>Средние оценки по предметам</h2>
   <table>
     <thead>
     <tr>
-      <th>Имя</th>
-      <th>Фамилия</th>
-      <th>Класс</th>
-      <th>Действия</th>
+      <th>Предмет</th>
+      <th>Средняя оценка</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="child : ${children}">
-      <td th:text="${child.firstName}"></td>
-      <td th:text="${child.lastName}"></td>
-      <td th:text="${child.classId.classNumber} + ${child.classId.classLetter}"></td>
-      <td>
-        <a th:href="@{/parent/child/{id}/grades(id=${child.studentId})}">Оценки</a> |
-        <a th:href="@{/parent/child/{id}/attendance(id=${child.studentId})}">Посещаемость</a> |
-        <a th:href="@{/parent/child/{id}/schedule(id=${child.studentId})}">Расписание</a>
-      </td>
+    <tr th:each="grade : ${gradesBySubject}">
+      <td th:text="${grade[0]}"></td>
+      <td th:text="${#numbers.formatDecimal(grade[1], 1, 2)}"></td>
+    </tr>
+    </tbody>
+  </table>
+  <h2>Все оценки</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>Предмет</th>
+      <th>Дата</th>
+      <th>Оценка</th>
+      <th>Тип</th>
+      <th>Комментарий</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="grade : ${grades}">
+      <td th:text="${grade.subjectName}"></td>
+      <td th:text="${grade.gradeDate}"></td>
+      <td th:text="${grade.gradeValue}"></td>
+      <td th:text="${grade.gradeType}"></td>
+      <td th:text="${grade.comment}"></td>
     </tr>
     </tbody>
   </table>

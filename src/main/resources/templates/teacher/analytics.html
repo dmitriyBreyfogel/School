@@ -2,7 +2,7 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Панель родителя</title>
+  <title>Аналитика</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -51,6 +51,15 @@
     .logout a:hover {
       background-color: #ffe6e6;
     }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 200px;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -75,32 +84,40 @@
   <div class="logout">
     <a th:href="@{/logout}">Выйти</a>
   </div>
-  <h1>Добро пожаловать, <span th:text="${parent.firstName} + ' ' + ${parent.lastName}"></span></h1>
+  <h1>Аналитика, <span th:text="${teacher.firstName} + ' ' + ${teacher.lastName}"></span></h1>
   <div class="nav">
-    <a th:href="@{/parent/children}">Дети</a>
-    <a th:href="@{/parent/teachers}">Учителя</a>
-    <a th:href="@{/parent/events}">Мероприятия</a>
+    <a th:href="@{/teacher/dashboard}">Панель</a>
+    <a th:href="@{/teacher/schedule}">Расписание</a>
+    <a th:href="@{/teacher/grades}">Оценки</a>
+    <a th:href="@{/teacher/attendance}">Посещаемость</a>
+    <a th:href="@{/teacher/materials}">Материалы</a>
+    <a th:href="@{/teacher/students}">Ученики</a>
   </div>
-  <h2>Ваши дети</h2>
+  <div class="form-group">
+    <form th:action="@{/teacher/analytics}" method="post">
+      <label for="classId">Выберите класс:</label>
+      <select id="classId" name="classId">
+        <option value="">-- Выберите класс --</option>
+        <option th:each="class : ${classes}" th:value="${class.classId}" th:text="${class.classNumber} + ${class.classLetter}"></option>
+      </select>
+      <button type="submit">Показать</button>
+    </form>
+  </div>
   <table>
     <thead>
     <tr>
-      <th>Имя</th>
-      <th>Фамилия</th>
-      <th>Класс</th>
-      <th>Действия</th>
+      <th>Ученик</th>
+      <th>Средняя оценка</th>
+      <th>Количество оценок</th>
+      <th>Посещаемость</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="child : ${children}">
-      <td th:text="${child.firstName}"></td>
-      <td th:text="${child.lastName}"></td>
-      <td th:text="${child.classId.classNumber} + ${child.classId.classLetter}"></td>
-      <td>
-        <a th:href="@{/parent/child/{id}/grades(id=${child.studentId})}">Оценки</a> |
-        <a th:href="@{/parent/child/{id}/attendance(id=${child.studentId})}">Посещаемость</a> |
-        <a th:href="@{/parent/child/{id}/schedule(id=${child.studentId})}">Расписание</a>
-      </td>
+    <tr th:each="student : ${analytics}">
+      <td th:text="${student.lastName} + ' ' + ${student.firstName}"></td>
+      <td th:text="${student.averageGrade != null ? student.averageGrade.toFixed(2) : 'N/A'}"></td>
+      <td th:text="${student.gradeCount}"></td>
+      <td th:text="${student.presentCount} + '/' + ${student.attendanceCount}"></td>
     </tr>
     </tbody>
   </table>

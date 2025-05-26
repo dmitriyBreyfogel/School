@@ -2,7 +2,7 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Панель родителя</title>
+  <title>Посещаемость</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -18,7 +18,7 @@
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-    h1 {
+    h1, h2 {
       color: #333;
       text-align: center;
     }
@@ -75,32 +75,29 @@
   <div class="logout">
     <a th:href="@{/logout}">Выйти</a>
   </div>
-  <h1>Добро пожаловать, <span th:text="${parent.firstName} + ' ' + ${parent.lastName}"></span></h1>
+  <h1>Посещаемость, <span th:text="${student.firstName} + ' ' + ${student.lastName}"></span></h1>
   <div class="nav">
-    <a th:href="@{/parent/children}">Дети</a>
-    <a th:href="@{/parent/teachers}">Учителя</a>
-    <a th:href="@{/parent/events}">Мероприятия</a>
+    <a th:href="@{/student/dashboard}">Панель</a>
+    <a th:href="@{/student/grades}">Оценки</a>
+    <a th:href="@{/student/schedule}">Расписание</a>
   </div>
-  <h2>Ваши дети</h2>
+  <h2>Статистика посещаемости</h2>
+  <p>Всего занятий: <span th:text="${attendanceStats[0]}"></span></p>
+  <p>Присутствовал: <span th:text="${attendanceStats[1]}"></span></p>
+  <h2>Детали посещаемости</h2>
   <table>
     <thead>
     <tr>
-      <th>Имя</th>
-      <th>Фамилия</th>
-      <th>Класс</th>
-      <th>Действия</th>
+      <th>Дата</th>
+      <th>Присутствует</th>
+      <th>Причина отсутствия</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="child : ${children}">
-      <td th:text="${child.firstName}"></td>
-      <td th:text="${child.lastName}"></td>
-      <td th:text="${child.classId.classNumber} + ${child.classId.classLetter}"></td>
-      <td>
-        <a th:href="@{/parent/child/{id}/grades(id=${child.studentId})}">Оценки</a> |
-        <a th:href="@{/parent/child/{id}/attendance(id=${child.studentId})}">Посещаемость</a> |
-        <a th:href="@{/parent/child/{id}/schedule(id=${child.studentId})}">Расписание</a>
-      </td>
+    <tr th:each="att : ${attendance}">
+      <td th:text="${att.attendanceDate}"></td>
+      <td th:text="${att.isPresent} ? 'Да' : 'Нет'"></td>
+      <td th:text="${att.absenceReason}"></td>
     </tr>
     </tbody>
   </table>

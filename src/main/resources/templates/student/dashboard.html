@@ -1,175 +1,105 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Личный кабинет ученика</title>
-  <link rel="stylesheet" href="/webjars/bootstrap/5.2.3/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/webjars/font-awesome/6.4.0/css/all.min.css">
+  <title>Панель ученика</title>
   <style>
-    .sidebar {
-      background-color: #4caf50;
-      color: white;
-      height: 100vh;
-      position: fixed;
-    }
-    .sidebar .nav-link {
-      color: rgba(255, 255, 255, 0.8);
-      border-radius: 5px;
-      margin-bottom: 5px;
-    }
-    .sidebar .nav-link:hover, .sidebar .nav-link.active {
-      background-color: rgba(255, 255, 255, 0.1);
-      color: white;
-    }
-    .sidebar .nav-link i {
-      width: 20px;
-      margin-right: 10px;
-    }
-    .main-content {
-      margin-left: 250px;
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
       padding: 20px;
     }
-    .card {
-      border: none;
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-around;
       margin-bottom: 20px;
     }
-    .grade-badge {
-      font-size: 0.9em;
+    .nav a {
+      text-decoration: none;
+      color: #4CAF50;
+      padding: 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    .nav a:hover {
+      background-color: #e0e0e0;
+    }
+    .logout {
+      text-align: right;
+      margin-bottom: 20px;
+    }
+    .logout a {
+      text-decoration: none;
+      color: #ff4444;
       padding: 5px 10px;
-      border-radius: 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
     }
-    .attendance-present {
-      color: #4caf50;
+    .logout a:hover {
+      background-color: #ffe6e6;
     }
-    .attendance-absent {
-      color: #f44336;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
     }
-    .material-item {
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #4CAF50;
+      color: #fff;
+    }
+    tr:hover {
+      background-color: #f5f5f5;
     }
   </style>
 </head>
 <body>
-<div class="sidebar col-md-3 col-lg-2 d-md-block p-4">
-  <div class="text-center mb-4">
-    <i class="fas fa-user-graduate fa-3x mb-3"></i>
-    <h5 th:text="${student.getFullName()}"></h5>
-    <small class="text-muted" th:text="${student.studentClass.name}"></small>
+<div class="container">
+  <div class="logout">
+    <a th:href="@{/logout}">Выйти</a>
   </div>
-
-  <ul class="nav flex-column">
-    <li class="nav-item">
-      <a class="nav-link active" href="#">
-        <i class="fas fa-tachometer-alt"></i>Главная
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">
-        <i class="fas fa-book"></i>Учебные материалы
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="/change-password">
-        <i class="fas fa-key"></i>Сменить пароль
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="/logout">
-        <i class="fas fa-sign-out-alt"></i>Выход
-      </a>
-    </li>
-  </ul>
+  <h1>Добро пожаловать, <span th:text="${student.firstName} + ' ' + ${student.lastName}"></span></h1>
+  <div class="nav">
+    <a th:href="@{/student/grades}">Оценки</a>
+    <a th:href="@{/student/attendance}">Посещаемость</a>
+    <a th:href="@{/student/schedule}">Расписание</a>
+  </div>
+  <h2>Расписание на сегодня</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>Номер урока</th>
+      <th>Время</th>
+      <th>Предмет</th>
+      <th>Кабинет</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="schedule : ${todaySchedule}">
+      <td th:text="${schedule.lessonNumber}"></td>
+      <td th:text="${schedule.startTime} + ' - ' + ${schedule.endTime}"></td>
+      <td th:text="${schedule.subjectName}"></td>
+      <td th:text="${schedule.roomNumber}"></td>
+    </tr>
+    </tbody>
+  </table>
 </div>
-
-<div class="main-content">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h3><i class="fas fa-tachometer-alt me-2"></i>Панель управления</h3>
-    <div class="text-muted">
-      <i class="fas fa-calendar-day me-1"></i>
-      <span th:text="${#temporals.format(#temporals.createToday(), 'dd.MM.yyyy')}"></span>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-star me-2"></i>Последние оценки
-        </div>
-        <div class="card-body">
-          <div th:each="grade : ${grades}" class="mb-3">
-            <div class="d-flex justify-content-between">
-              <span th:text="${grade.subject.name}"></span>
-              <span class="badge bg-primary grade-badge" th:text="${grade.value}"></span>
-            </div>
-            <small class="text-muted" th:text="${grade.date} + ' - ' + ${grade.comment}"></small>
-          </div>
-          <div th:if="${grades.empty}" class="text-muted text-center py-3">
-            Нет оценок
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-clipboard-check me-2"></i>Посещаемость
-        </div>
-        <div class="card-body">
-          <div th:each="attendance : ${attendance}" class="mb-3">
-            <div class="d-flex justify-content-between">
-              <span th:text="${attendance.date}"></span>
-              <span th:class="${attendance.present} ? 'attendance-present' : 'attendance-absent'">
-                                <i class="fas" th:class="${attendance.present} ? 'fa-check' : 'fa-times'"></i>
-                                <span th:text="${attendance.present} ? 'Присутствовал' : 'Отсутствовал'"></span>
-                            </span>
-            </div>
-            <small class="text-muted" th:text="${attendance.subject.name}"></small>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-calendar-alt me-2"></i>Расписание
-        </div>
-        <div class="card-body">
-          <div th:each="day : ${schedule}" class="mb-4">
-            <h6 th:text="${day.key}"></h6>
-            <div th:each="lesson : ${day.value}" class="ps-3 mb-2">
-              <div class="d-flex justify-content-between">
-                <span th:text="${lesson.subject.name}"></span>
-                <small class="text-muted" th:text="${lesson.lessonNumber} + ' урок'"></small>
-              </div>
-              <small class="text-muted" th:text="${lesson.teacher.fullName}"></small>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-book-open me-2"></i>Учебные материалы
-        </div>
-        <div class="card-body">
-          <div th:each="material : ${materials}" class="material-item">
-            <div class="fw-bold" th:text="${material.title}"></div>
-            <div class="small text-muted" th:text="${material.subject.name}"></div>
-            <a href="#" class="btn btn-sm btn-outline-primary mt-1">
-              <i class="fas fa-download me-1"></i>Скачать
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script src="/webjars/jquery/3.6.4/jquery.min.js"></script>
-<script src="/webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

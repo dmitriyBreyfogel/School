@@ -2,7 +2,7 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Панель родителя</title>
+  <title>Учебные материалы</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -75,32 +75,28 @@
   <div class="logout">
     <a th:href="@{/logout}">Выйти</a>
   </div>
-  <h1>Добро пожаловать, <span th:text="${parent.firstName} + ' ' + ${parent.lastName}"></span></h1>
+  <h1>Учебные материалы, <span th:text="${teacher.firstName} + ' ' + ${teacher.lastName}"></span></h1>
   <div class="nav">
-    <a th:href="@{/parent/children}">Дети</a>
-    <a th:href="@{/parent/teachers}">Учителя</a>
-    <a th:href="@{/parent/events}">Мероприятия</a>
+    <a th:href="@{/teacher/dashboard}">Панель</a>
+    <a th:href="@{/teacher/schedule}">Расписание</a>
+    <a th:href="@{/teacher/grades}">Оценки</a>
+    <a th:href="@{/teacher/attendance}">Посещаемость</a>
+    <a th:href="@{/teacher/analytics}">Аналитика</a>
+    <a th:href="@{/teacher/students}">Ученики</a>
   </div>
-  <h2>Ваши дети</h2>
   <table>
     <thead>
     <tr>
-      <th>Имя</th>
-      <th>Фамилия</th>
-      <th>Класс</th>
-      <th>Действия</th>
+      <th>Название</th>
+      <th>Описание</th>
+      <th>Дата загрузки</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="child : ${children}">
-      <td th:text="${child.firstName}"></td>
-      <td th:text="${child.lastName}"></td>
-      <td th:text="${child.classId.classNumber} + ${child.classId.classLetter}"></td>
-      <td>
-        <a th:href="@{/parent/child/{id}/grades(id=${child.studentId})}">Оценки</a> |
-        <a th:href="@{/parent/child/{id}/attendance(id=${child.studentId})}">Посещаемость</a> |
-        <a th:href="@{/parent/child/{id}/schedule(id=${child.studentId})}">Расписание</a>
-      </td>
+    <tr th:each="material : ${materials}">
+      <td th:text="${material.material_name}"></td>
+      <td th:text="${material.description}"></td>
+      <td th:text="${material.upload_date}"></td>
     </tr>
     </tbody>
   </table>
