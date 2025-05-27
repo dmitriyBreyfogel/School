@@ -34,4 +34,5 @@ public class GradeDTO {
         this.gradeType = gradeType;
         this.comment = comment;
     }
+    public GradeDTO() {}
 }

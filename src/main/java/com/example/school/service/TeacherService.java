@@ -8,6 +8,7 @@ import com.example.school.model.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -76,6 +77,7 @@ public class TeacherService {
         return query.getResultList();
     }
 
+    @Transactional
     public void addGrade(GradeDTO gradeDTO, Integer teacherId) {
         Grade grade = new Grade();
         grade.setStudentId(entityManager.find(Student.class, gradeDTO.getStudentId()));
@@ -87,6 +89,7 @@ public class TeacherService {
         entityManager.persist(grade);
     }
 
+    @Transactional
     public void updateGrade(GradeDTO gradeDTO, Integer teacherId) {
         Grade grade = entityManager.find(Grade.class, gradeDTO.getGradeId());
         if (grade != null && isTeacherAuthorizedForGrade(grade, teacherId)) {
@@ -98,10 +101,13 @@ public class TeacherService {
         }
     }
 
+    @Transactional
     public void deleteGrade(Integer gradeId, Integer teacherId) {
         Grade grade = entityManager.find(Grade.class, gradeId);
         if (grade != null && isTeacherAuthorizedForGrade(grade, teacherId)) {
             entityManager.remove(grade);
+        } else {
+            throw new IllegalArgumentException("Grade not found or teacher not authorized");
         }
     }
 
@@ -126,6 +132,7 @@ public class TeacherService {
         return query.getResultList();
     }
 
+    @Transactional
     public void markAttendance(List<AttendanceDTO> attendanceList, Integer teacherId) {
         for (AttendanceDTO dto : attendanceList) {
             Attendance attendance = entityManager.find(Attendance.class, dto.getAttendanceId());
@@ -141,6 +148,7 @@ public class TeacherService {
         }
     }
 
+    @Transactional
     public void updateAttendance(AttendanceDTO attendanceDTO, Integer teacherId) {
         Attendance attendance = entityManager.find(Attendance.class, attendanceDTO.getAttendanceId());
         if (attendance != null && isTeacherAuthorizedForAttendance(attendance, teacherId)) {
@@ -150,6 +158,7 @@ public class TeacherService {
         }
     }
 
+    @Transactional
     public void deleteAttendance(Integer attendanceId, Integer teacherId) {
         Attendance attendance = entityManager.find(Attendance.class, attendanceId);
         if (attendance != null && isTeacherAuthorizedForAttendance(attendance, teacherId)) {

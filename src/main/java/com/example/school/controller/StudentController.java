@@ -45,9 +45,22 @@ public class StudentController {
             return "redirect:/login";
         }
         Integer studentId = (Integer) session.getAttribute("userId");
+        System.out.println("StudentID" + studentId);
         Student student = studentService.getStudentById(studentId);
+
+        //System.out.println("StudentID in class: " + student.getStudentId());
+        //System.out.println("Student class: " + student.getClassId().getClassNumber() + "-" + student.getClassId().getClassLetter());
+        //System.out.println("Student lastname: " + student.getLastName());
+
         List<GradeDTO> grades = studentService.getStudentGrades(studentId);
+
+        //System.out.println("Оценка: " + grades.get(0).getGradeId());
+
         List<Object[]> gradesBySubject = studentService.getGradesBySubject(studentId);
+
+        //System.out.println("Из Object [0]: " + gradesBySubject.get(0)[0]);
+        //System.out.println("Из Object [0]: " + gradesBySubject.get(0)[0]);
+
         model.addAttribute("student", student);
         model.addAttribute("grades", grades);
         model.addAttribute("gradesBySubject", gradesBySubject);

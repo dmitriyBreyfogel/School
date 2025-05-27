@@ -94,9 +94,9 @@
     </thead>
     <tbody>
     <tr th:each="material : ${materials}">
-      <td th:text="${material.material_name}"></td>
+      <td th:text="${material.title}"></td>
       <td th:text="${material.description}"></td>
-      <td th:text="${material.upload_date}"></td>
+      <td th:text="${material.creationDate}"></td>
     </tr>
     </tbody>
   </table>

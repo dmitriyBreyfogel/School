@@ -62,6 +62,7 @@ public class ParentController {
         Integer parentId = (Integer) session.getAttribute("userId");
         Parent parent = parentService.getParentById(parentId);
         List<Student> children = parentService.getParentChildren(parentId);
+
         if (!children.stream().anyMatch(child -> child.getStudentId().equals(childId))) {
             return "redirect:/parent/children";
         }

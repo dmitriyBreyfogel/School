@@ -17,7 +17,6 @@ public class AuthController {
 
     @GetMapping("/login")
     public String loginPage(Model model) {
-        System.out.println("Here is the login page");
         return "login";
     }
 

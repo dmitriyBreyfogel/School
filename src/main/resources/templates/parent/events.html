@@ -92,9 +92,9 @@
     </thead>
     <tbody>
     <tr th:each="event : ${upcomingEvents}">
-      <td th:text="${event.event_name}"></td>
+      <td th:text="${event.eventName}"></td>
       <td th:text="${event.description}"></td>
-      <td th:text="${event.event_date}"></td>
+      <td th:text="${event.eventDate}"></td>
     </tr>
     </tbody>
   </table>

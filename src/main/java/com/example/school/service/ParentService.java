@@ -10,6 +10,7 @@ import jakarta.persistence.Query;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,10 +32,16 @@ public class ParentService {
     }
 
     public List<GradeDTO> getChildGrades(Integer studentId) {
+        Student student = entityManager.find(Student.class, studentId);
+        if (student == null) {
+            return new ArrayList<>();
+        }
         Query query = entityManager.createQuery(
-                "SELECT new com.example.school.dto.GradeDTO(g.gradeId, g.studentId.studentId, s.firstName, s.lastName, g.subjectId.subjectId, sub.subjectName, g.gradeDate, g.gradeValue, g.gradeType, g.comment) " +
-                        "FROM Grade g JOIN Student s ON g.subjectId.subjectId = s.studentId " +
-                        "JOIN Subject sub ON g.subjectId.subjectId = sub.subjectId WHERE g.studentId = :studentId");
+                "SELECT new com.example.school.dto.GradeDTO(g.gradeId, g.studentId.studentId, s.firstName, s.lastName, " +
+                        "g.subjectId.subjectId, sub.subjectName, g.gradeDate, g.gradeValue, g.gradeType, g.comment) " +
+                        "FROM Grade g JOIN Student s ON g.studentId.studentId = s.studentId " +
+                        "JOIN Subject sub ON g.subjectId.subjectId = sub.subjectId " +
+                        "WHERE g.studentId.studentId = :studentId");
         query.setParameter("studentId", studentId);
         return query.getResultList();
     }
@@ -42,22 +49,28 @@ public class ParentService {
     public List<Object[]> getChildGradesBySubject(Integer studentId) {
         Query query = entityManager.createQuery(
                 "SELECT sub.subjectName, AVG(g.gradeValue) FROM Grade g JOIN Subject sub ON g.subjectId.subjectId = sub.subjectId " +
-                        "WHERE g.studentId = :studentId GROUP BY sub.subjectName");
+                        "WHERE g.studentId.studentId = :studentId GROUP BY sub.subjectName");
         query.setParameter("studentId", studentId);
         return query.getResultList();
     }
 
     public List<AttendanceDTO> getChildAttendance(Integer studentId) {
+        Student student = entityManager.find(Student.class, studentId);
+        if (student == null) {
+            return new ArrayList<>();
+        }
         Query query = entityManager.createQuery(
-                "SELECT new com.example.school.dto.AttendanceDTO(a.attendanceId, a.studentId.studentId, s.firstName, s.lastName, a.attendanceDate, a.schedule.id, a.isPresent, a.absenceReason)" +
-                        "FROM Attendance a JOIN Student s ON a.studentId.studentId = s.studentId WHERE a.studentId = :studentId");
+                "SELECT new com.example.school.dto.AttendanceDTO(a.attendanceId, a.studentId.studentId, s.firstName, s.lastName, " +
+                        "a.attendanceDate, a.schedule.scheduleId, a.isPresent, a.absenceReason) " +
+                        "FROM Attendance a JOIN Student s ON a.studentId.studentId = s.studentId " +
+                        "WHERE a.studentId.studentId = :studentId");
         query.setParameter("studentId", studentId);
         return query.getResultList();
     }
 
     public Object[] getChildAttendanceStats(Integer studentId) {
         Query query = entityManager.createQuery(
-                "SELECT COUNT(a), SUM(CASE WHEN a.isPresent = true THEN 1 ELSE 0 END) FROM Attendance a WHERE a.studentId = :studentId");
+                "SELECT COUNT(a), SUM(CASE WHEN a.isPresent = true THEN 1 ELSE 0 END) FROM Attendance a WHERE a.studentId.studentId = :studentId");
         query.setParameter("studentId", studentId);
         return (Object[]) query.getSingleResult();
     }

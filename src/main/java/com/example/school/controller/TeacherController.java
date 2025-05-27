@@ -5,16 +5,20 @@ import com.example.school.dto.GradeDTO;
 import com.example.school.dto.ScheduleDTO;
 import com.example.school.dto.StudentAnalyticsDTO;
 import com.example.school.model.*;
+import com.example.school.repository.GradeRepository;
 import com.example.school.service.AnalyticsService;
 import com.example.school.service.TeacherService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/teacher")
@@ -25,6 +29,10 @@ public class TeacherController {
 
     @Autowired
     private AnalyticsService analyticsService;
+    @Autowired
+    private LocalContainerEntityManagerFactoryBean entityManagerFactory2;
+    @Autowired
+    private GradeRepository gradeRepository;
 
     private boolean checkTeacherRole(HttpSession session) {
         String role = (String) session.getAttribute("role");
@@ -67,6 +75,8 @@ public class TeacherController {
         List<SchoolClass> classes = teacherService.getTeacherClasses(teacherId);
         model.addAttribute("teacher", teacher);
         model.addAttribute("classes", classes);
+        model.addAttribute("students", new ArrayList<Student>());
+        model.addAttribute("subjects", teacherService.getTeacherSubjects(teacherId));
         return "teacher/grades";
     }
 
@@ -79,40 +89,83 @@ public class TeacherController {
         Teacher teacher = teacherService.getTeacherById(teacherId);
         List<GradeDTO> grades = teacherService.getClassGrades(classId, teacherId);
         List<SchoolClass> classes = teacherService.getTeacherClasses(teacherId);
+        List<Student> students = teacherService.getClassStudentsWithDetails(classId, teacherId);
         model.addAttribute("teacher", teacher);
         model.addAttribute("classes", classes);
         model.addAttribute("grades", grades);
         model.addAttribute("classId", classId);
+        model.addAttribute("students", students);
+        model.addAttribute("subjects", teacherService.getTeacherSubjects(teacherId));
         return "teacher/grades";
     }
 
     @PostMapping("/add-grade")
-    public String addGrade(@ModelAttribute GradeDTO gradeDTO, @RequestParam("classId") Integer classId, HttpSession session) {
+    public String addGrade(@ModelAttribute GradeDTO gradeDTO, @RequestParam("classId") Integer classId, HttpSession session, Model model) {
         if (!checkTeacherRole(session)) {
             return "redirect:/login";
         }
         Integer teacherId = (Integer) session.getAttribute("userId");
-        teacherService.addGrade(gradeDTO, teacherId);
+        try {
+            teacherService.addGrade(gradeDTO, teacherId);
+        } catch (Exception e) {
+            model.addAttribute("error", "Ошибка при добавлении оценки: " + e.getMessage());
+            return null;
+        }
         return "redirect:/teacher/grades?classId=" + classId;
     }
 
-    @PostMapping("/update-grade")
-    public String updateGrade(@ModelAttribute GradeDTO gradeDTO, @RequestParam("classId") Integer classId, HttpSession session) {
+    @GetMapping("/update-grade")
+    public String showUpdateGradeForm(@RequestParam("gradeId") Integer gradeId, @RequestParam("classId") Integer classId,
+                                      HttpSession session, Model model) {
         if (!checkTeacherRole(session)) {
             return "redirect:/login";
         }
         Integer teacherId = (Integer) session.getAttribute("userId");
-        teacherService.updateGrade(gradeDTO, teacherId);
+        Optional<Grade> gradeOpt = gradeRepository.findById(gradeId);
+        if (gradeOpt.isEmpty()) {
+            model.addAttribute("error", "Оценка не найдена");
+            return null;
+        }
+        Grade grade = gradeOpt.get();
+        GradeDTO gradeDTO = new GradeDTO();
+        gradeDTO.setGradeId(grade.getGradeId());
+        gradeDTO.setStudentId(grade.getStudentId().getStudentId());
+        gradeDTO.setSubjectId(grade.getSubjectId().getSubjectId());
+        gradeDTO.setGradeDate(grade.getGradeDate());
+        gradeDTO.setGradeValue(grade.getGradeValue());
+        gradeDTO.setGradeType(grade.getGradeType());
+        gradeDTO.setComment(grade.getComment());
+        model.addAttribute("gradeDTO", gradeDTO);
+        return null;
+    }
+
+    @PostMapping("/update-grade")
+    public String updateGrade(@ModelAttribute GradeDTO gradeDTO, @RequestParam("classId") Integer classId, HttpSession session, Model model) {
+        if (!checkTeacherRole(session)) {
+            return "redirect:/login";
+        }
+        Integer teacherId = (Integer) session.getAttribute("userId");
+        try {
+            teacherService.updateGrade(gradeDTO, teacherId);
+        } catch (Exception e) {
+            model.addAttribute("error", "Ошибка при обновлении оценки: " + e.getMessage());
+            return null;
+        }
         return "redirect:/teacher/grades?classId=" + classId;
     }
 
     @PostMapping("/delete-grade")
-    public String deleteGrade(@RequestParam("gradeId") Integer gradeId, @RequestParam("classId") Integer classId, HttpSession session) {
+    public String deleteGrade(@RequestParam("gradeId") Integer gradeId, @RequestParam("classId") Integer classId, HttpSession session, Model model) {
         if (!checkTeacherRole(session)) {
             return "redirect:/login";
         }
         Integer teacherId = (Integer) session.getAttribute("userId");
-        teacherService.deleteGrade(gradeId, teacherId);
+        try {
+            teacherService.deleteGrade(gradeId, teacherId);
+        } catch (Exception e) {
+            model.addAttribute("error", "Ошибка при удалении оценки: " + e.getMessage());
+            return null;
+        }
         return "redirect:/teacher/grades?classId=" + classId;
     }
 

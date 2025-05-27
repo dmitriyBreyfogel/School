@@ -93,12 +93,12 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="schedule : ${schedule}">
-      <td th:text="${schedule.dayOfWeek}"></td>
-      <td th:text="${schedule.lessonNumber}"></td>
-      <td th:text="${schedule.startTime} + ' - ' + ${schedule.endTime}"></td>
-      <td th:text="${schedule.subjectName}"></td>
-      <td th:text="${schedule.roomNumber}"></td>
+    <tr th:each="scheduleLocale : ${schedule}">
+      <td th:text="${scheduleLocale.dayOfWeek}"></td>
+      <td th:text="${scheduleLocale.lessonNumber}"></td>
+      <td th:text="${scheduleLocale.startTime} + ' - ' + ${scheduleLocale.endTime}"></td>
+      <td th:text="${scheduleLocale.subjectName}"></td>
+      <td th:text="${scheduleLocale.roomNumber}"></td>
     </tr>
     </tbody>
   </table>

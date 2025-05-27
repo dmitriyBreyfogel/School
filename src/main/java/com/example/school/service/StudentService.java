@@ -10,6 +10,7 @@ import jakarta.persistence.Query;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,19 +25,23 @@ public class StudentService {
     }
 
     public List<GradeDTO> getStudentGrades(Integer studentId) {
+        Student student = entityManager.find(Student.class, studentId);
+        if (student == null) {
+            return new ArrayList<>();
+        }
         Query query = entityManager.createQuery(
                 "SELECT new com.example.school.dto.GradeDTO(g.gradeId, g.studentId.studentId, s.firstName, s.lastName, " +
                         "g.subjectId.subjectId, sub.subjectName, g.gradeDate, g.gradeValue, g.gradeType, g.comment) " +
-                        "FROM Grade g JOIN Student s ON g.studentId.studentId = s.studentId " +
-                        "JOIN Subject sub ON g.subjectId.subjectId = sub.subjectId WHERE g.studentId = :studentId");
-        query.setParameter("studentId", studentId);
+                        "FROM Grade g JOIN g.studentId s " +
+                        "JOIN g.subjectId sub WHERE g.studentId = :student");
+        query.setParameter("student", student);
         return query.getResultList();
     }
 
     public List<Object[]> getGradesBySubject(Integer studentId) {
         Query query = entityManager.createQuery(
                 "SELECT sub.subjectName, AVG(g.gradeValue) FROM Grade g JOIN Subject sub ON g.subjectId.subjectId = sub.subjectId " +
-                        "WHERE g.studentId = :studentId GROUP BY sub.subjectName");
+                        "WHERE g.studentId.studentId = :studentId GROUP BY sub.subjectName");
         query.setParameter("studentId", studentId);
         return query.getResultList();
     }

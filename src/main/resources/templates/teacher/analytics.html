@@ -115,7 +115,7 @@
     <tbody>
     <tr th:each="student : ${analytics}">
       <td th:text="${student.lastName} + ' ' + ${student.firstName}"></td>
-      <td th:text="${student.averageGrade != null ? student.averageGrade.toFixed(2) : 'N/A'}"></td>
+      <td th:text="${student.averageGrade != null ? #numbers.formatDecimal(student.averageGrade, 1, 2) : 'N/A'}"></td>
       <td th:text="${student.gradeCount}"></td>
       <td th:text="${student.presentCount} + '/' + ${student.attendanceCount}"></td>
     </tr>
