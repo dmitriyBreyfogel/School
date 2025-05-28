@@ -73,9 +73,10 @@ public class TeacherController {
         Integer teacherId = (Integer) session.getAttribute("userId");
         Teacher teacher = teacherService.getTeacherById(teacherId);
         List<SchoolClass> classes = teacherService.getTeacherClasses(teacherId);
+        List<List<Student>> students = teacherService.getAllStudentsForTeacherClasses(teacherId);
         model.addAttribute("teacher", teacher);
         model.addAttribute("classes", classes);
-        model.addAttribute("students", new ArrayList<Student>());
+        model.addAttribute("students", students);
         model.addAttribute("subjects", teacherService.getTeacherSubjects(teacherId));
         return "teacher/grades";
     }
@@ -124,7 +125,7 @@ public class TeacherController {
         Optional<Grade> gradeOpt = gradeRepository.findById(gradeId);
         if (gradeOpt.isEmpty()) {
             model.addAttribute("error", "Оценка не найдена");
-            return null;
+            return "redirect:/teacher/grades?classId=" + classId;
         }
         Grade grade = gradeOpt.get();
         GradeDTO gradeDTO = new GradeDTO();
@@ -136,7 +137,8 @@ public class TeacherController {
         gradeDTO.setGradeType(grade.getGradeType());
         gradeDTO.setComment(grade.getComment());
         model.addAttribute("gradeDTO", gradeDTO);
-        return null;
+        model.addAttribute("classId", classId); // Передайте classId в шаблон, если нужно
+        return "teacher/update-grade";
     }
 
     @PostMapping("/update-grade")

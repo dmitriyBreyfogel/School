@@ -84,7 +84,7 @@
   <div class="logout">
     <a th:href="@{/logout}">Выйти</a>
   </div>
-  <h1>Аналитика, <span th:text="${teacher.firstName} + ' ' + ${teacher.lastName}"></span></h1>
+  <h1>Аналитика ваших классов</h1>
   <div class="nav">
     <a th:href="@{/teacher/dashboard}">Панель</a>
     <a th:href="@{/teacher/schedule}">Расписание</a>
@@ -117,7 +117,7 @@
       <td th:text="${student.lastName} + ' ' + ${student.firstName}"></td>
       <td th:text="${student.averageGrade != null ? #numbers.formatDecimal(student.averageGrade, 1, 2) : 'N/A'}"></td>
       <td th:text="${student.gradeCount}"></td>
-      <td th:text="${student.presentCount} + '/' + ${student.attendanceCount}"></td>
+      <td th:text="${student.attendanceCount} + '/' + ${student.presentCount}"></td>
     </tr>
     </tbody>
   </table>

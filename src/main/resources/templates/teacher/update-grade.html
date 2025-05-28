@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Обновить оценку</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
+    .nav a {
+      text-decoration: none;
+      color: #4CAF50;
+      padding: 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    .nav a:hover {
+      background-color: #e0e0e0;
+    }
+    .logout {
+      text-align: right;
+      margin-bottom: 20px;
+    }
+    .logout a {
+      text-decoration: none;
+      color: #ff4444;
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    .logout a:hover {
+      background-color: #ffe6e6;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    select, input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 200px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: #fff;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #4CAF50;
+      color: #fff;
+    }
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+<h2>Обновить оценку</h2>
+<form th:action="@{/teacher/update-grade}" method="post">
+  <input type="hidden" name="gradeId" th:value="${gradeDTO.gradeId}"/>
+  <input type="hidden" name="classId" th:value="${classId}"/>
+  <label>Ученик:</label>
+  <input type="text" th:value="${gradeDTO.studentId}" readonly/>
+  <label>Предмет:</label>
+  <input type="text" th:value="${gradeDTO.subjectId}" readonly/>
+  <label>Дата:</label>
+  <input type="date" name="gradeDate" th:value="${gradeDTO.gradeDate}"/>
+  <label>Оценка:</label>
+  <input type="number" name="gradeValue" th:value="${gradeDTO.gradeValue}"/>
+  <label>Тип:</label>
+  <input type="text" name="gradeType" th:value="${gradeDTO.gradeType}"/>
+  <label>Комментарий:</label>
+  <textarea name="comment" th:text="${gradeDTO.comment}"></textarea>
+  <button type="submit">Обновить</button>
+</form>
+<a th:href="@{/teacher/grades(classId=${classId})}">Назад</a>
+</body>
+</html>

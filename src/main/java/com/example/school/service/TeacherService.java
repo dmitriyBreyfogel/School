@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,9 +27,22 @@ public class TeacherService {
     }
 
     public List<SchoolClass> getTeacherClasses(Integer teacherId) {
-        Query query = entityManager.createQuery("SELECT c FROM SchoolClass c WHERE c.classId = :teacherId");
+        Query query = entityManager.createQuery("SELECT c FROM SchoolClass c WHERE c.teacherId.teacherId = :teacherId");
         query.setParameter("teacherId", teacherId);
         return query.getResultList();
+    }
+
+    public List<List<Student>> getAllStudentsForTeacherClasses(Integer teacherId) {
+        List<SchoolClass> classes = getTeacherClasses(teacherId);
+        List<List<Student>> allStudents = new ArrayList<>();
+        for (SchoolClass schoolClass : classes) {
+            Query query = entityManager.createQuery(
+                    "SELECT s FROM Student s WHERE s.classId.classId = :classId");
+            query.setParameter("classId", schoolClass.getClassId());
+            List<Student> students = query.getResultList();
+            allStudents.add(students);
+        }
+        return allStudents;
     }
 
     public List<Subject> getTeacherSubjects(Integer teacherId) {
@@ -183,8 +197,9 @@ public class TeacherService {
 
     public List<Student> getClassStudentsWithDetails(Integer classId, Integer teacherId) {
         Query query = entityManager.createQuery(
-                "SELECT s FROM Student s WHERE s.classId.classId = :classId");
+                "SELECT s FROM Student s JOIN s.classId c WHERE c.classId = :classId AND c.teacherId.teacherId = :teacherId");
         query.setParameter("classId", classId);
+        query.setParameter("teacherId", teacherId);
         return query.getResultList();
     }
 }
